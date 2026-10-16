@@ -3,6 +3,8 @@ package taller02;
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 public class Fonda {
 
@@ -114,15 +116,15 @@ public class Fonda {
 
 			Choripan c = choripanes[i];
 
-			System.out.println(
-					espacios("  " + (i + 1), 6) + espacios(c.getConsumidor(), 15) + espacios(c.getLargo() + " cm", 9) + espacios(c.getAncho() + " cm", 9) + espacios(c.getFecha(), 14) + redondear(c.calcularKcal()));
+			System.out.println(espacios("  " + (i + 1), 6) + espacios(c.getConsumidor(), 15)
+					+ espacios(c.getLargo() + " cm", 9) + espacios(c.getAncho() + " cm", 9) + espacios(c.getFecha(), 14)
+					+ redondear(c.calcularKcal()));
 		}
 
 		System.out.println("----------------------------------------------------------");
 		System.out.println("  Total: " + cantidadChoripanes + " choripanes registrados");
 		System.out.println("==========================================================");
-		
-		
+
 	}
 
 	public void mostrarTerremotos() {
@@ -136,7 +138,8 @@ public class Fonda {
 
 			Terremoto t = terremotos[i];
 
-			System.out.println(espacios("  " + (i + 1), 6) + espacios(t.getConsumidor(), 15) + espacios(t.getLitros() + " L", 11) + espacios(t.getFecha(), 14) + redondear(t.calcularKcal()));
+			System.out.println(espacios("  " + (i + 1), 6) + espacios(t.getConsumidor(), 15)
+					+ espacios(t.getLitros() + " L", 11) + espacios(t.getFecha(), 14) + redondear(t.calcularKcal()));
 
 			totalLitros = totalLitros + t.getLitros();
 		}
@@ -146,11 +149,134 @@ public class Fonda {
 		System.out.println("==========================================================");
 	}
 
+	public void mostrarParticipantes() {
+
+		System.out.println("\nConsumidores disponibles:");
+
+		for (int i = 0; i < cantidadParticipantes; i++) {
+			System.out.println("  [" + (i + 1) + "] " + participantes[i]);
+		}
+	}
+
 	public int getCantidadParticipantes() {
 		return cantidadParticipantes;
 	}
 
+	public String getParticipante(int posicion) {
+		return participantes[posicion];
+	}
+
+	public boolean agregarChoripan(String consumidor, double largo, double ancho, String fecha) {
+
+		if (cantidadChoripanes + cantidadTerremotos >= 200) {
+			return false;
+		}
+
+		choripanes[cantidadChoripanes] = new Choripan(consumidor, largo, ancho, fecha);
+
+		cantidadChoripanes++;
+		return true;
+	}
+
+	public boolean agregarTerremoto(String consumidor, double litros, String fecha) {
+
+		if (cantidadChoripanes + cantidadTerremotos >= 200) {
+			return false;
+		}
+
+		terremotos[cantidadTerremotos] = new Terremoto(consumidor, litros, fecha);
+
+		cantidadTerremotos++;
+		return true;
+	}
+
 	public int getCantidadRegistros() {
 		return cantidadChoripanes + cantidadTerremotos;
+	}
+
+	public boolean guardarConsumos() {
+
+		try {
+
+			FileWriter archivo = new FileWriter("Consumido.txt");
+			BufferedWriter escritor = new BufferedWriter(archivo);
+
+			for (int i = 0; i < cantidadChoripanes; i++) {
+
+				Choripan c = choripanes[i];
+
+				escritor.write("Choripan;" + c.getConsumidor() + ";" + c.getLargo() + ";" + c.getAncho() + ";" + c.getFecha());
+
+				escritor.newLine();
+			}
+
+			for (int i = 0; i < cantidadTerremotos; i++) {
+
+				Terremoto t = terremotos[i];
+
+				escritor.write("Terremoto;" + t.getConsumidor() + ";" + t.getLitros() + ";" + t.getFecha());
+
+				escritor.newLine();
+			}
+
+			escritor.close();
+
+			return true;
+
+		} catch (IOException e) {
+
+			System.out.println(">> Error al guardar Consumido.txt.");
+			return false;
+		}
+	}
+
+	public int getCantidadChoripanes() {
+		return cantidadChoripanes;
+	}
+
+	public int getCantidadTerremotos() {
+		return cantidadTerremotos;
+	}
+
+	public void editarChoripan(int posicion, String consumidor, double largo, double ancho, String fecha) {
+
+		choripanes[posicion] = new Choripan(consumidor, largo, ancho, fecha);
+	}
+
+	public void editarTerremoto(int posicion, String consumidor, double litros, String fecha) {
+
+		terremotos[posicion] = new Terremoto(consumidor, litros, fecha);
+	}
+
+	public boolean eliminarChoripan(int posicion) {
+
+		if (posicion < 0 || posicion >= cantidadChoripanes) {
+			return false;
+		}
+
+		for (int i = posicion; i < cantidadChoripanes - 1; i++) {
+			choripanes[i] = choripanes[i + 1];
+		}
+
+		cantidadChoripanes--;
+		choripanes[cantidadChoripanes] = null;
+
+		return true;
+	}
+
+	public boolean eliminarTerremoto(int posicion) {
+
+		if (posicion < 0 || posicion >= cantidadTerremotos) {
+			return false;
+		}
+
+		for (int i = posicion; i < cantidadTerremotos - 1; i++) {
+			terremotos[i] = terremotos[i + 1];
+		}
+
+		cantidadTerremotos--;
+		terremotos[cantidadTerremotos] = null;
+
+		return true;
 	}
 }
