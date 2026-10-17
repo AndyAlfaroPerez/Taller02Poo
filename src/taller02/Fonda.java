@@ -279,4 +279,92 @@ public class Fonda {
 
 		return true;
 	}
+	public void calcularMetricas() {
+
+	    System.out.println("=============== METRICAS =================");
+
+	    System.out.println("Total de choripanes: " + cantidadChoripanes);
+	    System.out.println("Total de terremotos: " + cantidadTerremotos);
+
+	    System.out.println("------------------------------------------");
+
+	    for (int i = 0; i < cantidadParticipantes; i++) {
+
+	        String nombre = participantes[i];
+
+	        int totalChoripanes = 0;
+	        int totalTerremotos = 0;
+	        double calorias = 0;
+
+	        for (int j = 0; j < cantidadChoripanes; j++) {
+
+	            if (choripanes[j].getConsumidor().equals(nombre)) {
+
+	                totalChoripanes++;
+	                calorias = calorias + choripanes[j].calcularKcal();
+	            }
+	        }
+
+	        for (int j = 0; j < cantidadTerremotos; j++) {
+
+	            if (terremotos[j].getConsumidor().equals(nombre)) {
+
+	                totalTerremotos++;
+	                calorias = calorias + terremotos[j].calcularKcal();
+	            }
+	        }
+
+	        System.out.println("Participante: " + nombre);
+	        System.out.println("  Choripanes consumidos: " + totalChoripanes);
+	        System.out.println("  Terremotos consumidos: " + totalTerremotos);
+	        System.out.println("  Calorias consumidas: " + redondear(calorias));
+	        System.out.println("  Dias de borrachera: " + contarBorrachera(nombre));
+	        System.out.println("------------------------------------------");
+	    }
+
+	    System.out.println("==========================================");
+	}
+	public int contarBorrachera(String nombre) {
+
+	    int dias = 0;
+
+	    for (int i = 0; i < cantidadTerremotos; i++) {
+
+	        if (terremotos[i].getConsumidor().equals(nombre)) {
+
+	            String fecha = terremotos[i].getFecha();
+
+	            boolean repetida = false;
+
+	            for (int j = 0; j < i; j++) {
+
+	                if (terremotos[j].getConsumidor().equals(nombre) &&
+	                    terremotos[j].getFecha().equals(fecha)) {
+
+	                    repetida = true;
+	                }
+	            }
+
+	            if (!repetida) {
+
+	                double litros = 0;
+
+	                for (int j = 0; j < cantidadTerremotos; j++) {
+
+	                    if (terremotos[j].getConsumidor().equals(nombre) &&
+	                        terremotos[j].getFecha().equals(fecha)) {
+
+	                        litros = litros + terremotos[j].getLitros();
+	                    }
+	                }
+
+	                if (litros >= 2) {
+	                    dias++;
+	                }
+	            }
+	        }
+	    }
+
+	    return dias;
+	}
 }

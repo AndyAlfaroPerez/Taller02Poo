@@ -48,8 +48,8 @@ public class Main {
 				break;
 
 			case 3:
-				System.out.println("Calcular metricas");
-				break;
+			    fonda.calcularMetricas();
+			    break;
 
 			case 4:
 				System.out.println(">> Hasta luego...");
